@@ -1,122 +1,110 @@
-package Autovermietung;
+package PKWVermietungsverwaltung;
+
 import java.io.Serializable;
-import java.util.Random;
 
 public class PKW implements Serializable{
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
+	
+	public enum Status {Verfügbar, Belegt, Reperatur}
+	public enum Kraftstoff {Benzin_E5, Benzin_E10, Benzin_E85, Diesel_B7, Diesel_XTL,Wasserstoff, Elektro, Hybrid}
+	
+	private String ID;
+	private String Kennzeichen;
+	private Status Status;
+	private int Preis;
+	private String Marke;
+	private Kraftstoff Kraftstoff;
+	private String Modell;
+	private String Details;
+	
+	public PKW(String Seriennummer, String Kennzeichen, Status Status , int Preis, String Marke, Kraftstoff Kraftstoff, String Modell, String Details) {
+		this.ID = Seriennummer;
+		this.Kennzeichen = Kennzeichen;
+		this.Status = Status;
+		this.Preis = Preis;
+		this.Marke = Marke;
+		this.Kraftstoff = Kraftstoff;
+		this.Modell = Modell;
+		this.Details = Details;
+	}
+	
+	public void display() {
+		System.out.println("-----===== Informationen =====-----");
+		System.out.println("ID: " + ID);
+		System.out.println("Kennzeichen: " + Kennzeichen);
+		System.out.println("Status: " + Status);
+		System.out.println("Preis: " + Preis);
+		System.out.println("Marke: " + Marke);
+		System.out.println("Kraftstoff: " + Kraftstoff);
+		System.out.println("Modell: " + Modell);
+		System.out.println("Details: " + Details);
+		System.out.println("-----=========================-----");
+		System.out.println("");
+	}
 
-    private String Seriennummer;
-    private String Kennzeichen;
-    private String Status;
-    private int Preis;
-    private String Marke;
-    private String Kraftstoff;
-    private String Modell;
-    private String Details;
-    private String PKWName;
+	public String getID() {
+		return ID;
+	}
 
-    public PKW(String Seriennummer, String Kennzeichen, String Status , int Preis, String Marke, String Kraftstoff, String Modell, String Details, String PKWName) {
-        this.Seriennummer = createSeriennummer();
-        this.Kennzeichen = Kennzeichen;
-        this.Status = Status;
-        this.Preis = Preis;
-        this.Marke = Marke;
-        this.Kraftstoff = Kraftstoff;
-        this.Modell = Modell;
-        this.Details = Details;
-        this.PKWName = PKWName;
-    }
+	public void setID(String iD) {
+		ID = iD;
+	}
 
-    public String createSeriennummer() {
-        Random random = new Random();
-        String serialnumber = "";
+	public String getKennzeichen() {
+		return Kennzeichen;
+	}
 
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	public void setKennzeichen(String kennzeichen) {
+		Kennzeichen = kennzeichen;
+	}
 
-        for(int i = 0; i < 25; i++) {
-            int index = random.nextInt(characters.length());
-            serialnumber += characters.charAt(index);
-        }
-        return serialnumber;
-    }
+	public Status getStatus() {
+		return Status;
+	}
 
-    public void display() {
-        System.out.println("-----===== Informationen =====-----");
-        System.out.println("Seriennummer: " + Seriennummer);
-        System.out.println("Kennzeichen: " + Kennzeichen);
-        System.out.println("Status: " + Status);
-        System.out.println("Preis: " + Preis);
-        System.out.println("Marke: " + Marke);
-        System.out.println("Kraftstoff: " + Kraftstoff);
-        System.out.println("Modell: " + Modell);
-        System.out.println("Details: " + Details);
-        System.out.println("PKWName: " + PKWName);
-        System.out.println("-----=========================-----");
-        System.out.println("");
-    }
+	public void setStatus(Status status) {
+		Status = status;
+	}
 
-    public String getSeriennummer() {
-        return Seriennummer;
-    }
+	public int getPreis() {
+		return Preis;
+	}
 
-    public void setSeriennummer(String seriennummer) {
-        Seriennummer = seriennummer;
-    }
+	public void setPreis(int preis) {
+		Preis = preis;
+	}
 
-    public String getKennzeichen() {
-        return Kennzeichen;
-    }
+	public String getMarke() {
+		return Marke;
+	}
 
-    public void setKennzeichen(String kennzeichen) {
-        Kennzeichen = kennzeichen;
-    }
+	public void setMarke(String marke) {
+		Marke = marke;
+	}
 
-    public String getStatus() {
-        return Status;
-    }
+	public Kraftstoff getKraftstoff() {
+		return Kraftstoff;
+	}
 
-    public void setStatus(String status) {
-        Status = status;
-    }
+	public void setKraftstoff(Kraftstoff kraftstoff) {
+		Kraftstoff = kraftstoff;
+	}
 
-    public int getPreis() {
-        return Preis;
-    }
+	public String getModell() {
+		return Modell;
+	}
 
-    public void setPreis(int preis) {
-        Preis = preis;
-    }
+	public void setModell(String modell) {
+		Modell = modell;
+	}
 
-    public String getMarke() {
-        return Marke;
-    }
+	public String getDetails() {
+		return Details;
+	}
 
-    public void setMarke(String marke) {
-        Marke = marke;
-    }
+	public void setDetails(String details) {
+		Details = details;
+	}
 
-    public String getKraftstoff() {
-        return Kraftstoff;
-    }
-
-    public void setKraftstoff(String kraftstoff) {
-        Kraftstoff = kraftstoff;
-    }
-
-    public String getModell() {
-        return Modell;
-    }
-
-    public void setModell(String modell) {
-        Modell = modell;
-    }
-
-    public String getDetails() {
-        return Details;
-    }
-
-    public void setDetails(String details) {
-        Details = details;
-    }
-
+	
 }
