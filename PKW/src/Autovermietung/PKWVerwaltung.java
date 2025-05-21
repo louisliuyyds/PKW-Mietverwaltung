@@ -1,4 +1,4 @@
-package PKWVermietungsverwaltung;
+package Autovermietung;
 
 import java.io.File;
 import java.io.FileInputStream;

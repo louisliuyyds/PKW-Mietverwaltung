@@ -1,4 +1,4 @@
-package PKWVermietungsverwaltung;
+package Autovermietung;
 
 public class Auftrag {
 	

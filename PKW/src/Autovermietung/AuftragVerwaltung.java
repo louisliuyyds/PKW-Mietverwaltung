@@ -1,4 +1,4 @@
-package PKWVermietungsverwaltung;
+package Autovermietung;
 
 import java.util.HashMap;
 import java.util.Random;
