@@ -1,4 +1,4 @@
-package Autovermietung;
+package defaults;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -102,22 +102,22 @@ public class ZugriffFuhrpark {
         }
     }
     // 5. Datensatz anhand Fahrzeugbezeichnung und Kennzeichen ausgeben
-    public void getFahrzeug(String fahrzeug, String kennzeichen) {
-        String sql = "SELECT id_fuhrpark, kategorie, fahrzeug, kennzeichen, getriebe, anzahl_sitze, preis, verfuegbarkeit " +
-                     "FROM fuhrpark WHERE fahrzeug = ? AND kennzeichen = ?";
+    public void getFahrzeug(int id) {
+        String sql = "SELECT * " +
+                     "FROM fuhrpark WHERE id_fuhrpark";
 
         try (Connection conn = Connector.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, fahrzeug);
-            stmt.setString(2, kennzeichen);
+            stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 boolean found = false;
                 while (rs.next()) {
                     found = true;
-                    int id = rs.getInt("id_fuhrpark");
                     String kategorie = rs.getString("kategorie");
+                    String fahrzeug = rs.getString("fahrzeug");
+                    String kennzeichen = rs.getString("kennzeichen");
                     String getriebe = rs.getString("getriebe");
                     int sitze = rs.getInt("anzahl_sitze");
                     double preis = rs.getDouble("preis");
@@ -135,7 +135,7 @@ public class ZugriffFuhrpark {
                 }
 
                 if (!found) {
-                    System.out.println("Kein Fahrzeug mit Typ \"" + fahrzeug + "\" und Kennzeichen \"" + kennzeichen + "\" gefunden.");
+                    System.out.println("Kein Fahrzeug mit Typ \"" + id +" gefunden.");
                 }
             }
 
@@ -143,6 +143,32 @@ public class ZugriffFuhrpark {
             e.printStackTrace();
         }
     }
+    
+    public Fahrzeug getFahrzeugObjekt(int id) {
+        String sql = "SELECT * FROM fuhrpark WHERE id_fuhrpark = ?";
+        try (Connection conn = Connector.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Fahrzeug(
+                    rs.getInt("id_fuhrpark"),
+                    rs.getString("kategorie"),
+                    rs.getString("fahrzeug"),
+                    rs.getString("kennzeichen"),
+                    rs.getString("getriebe"),
+                    rs.getInt("anzahl_sitze"),
+                    rs.getDouble("preis"),
+                    rs.getBoolean("verfuegbarkeit")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     
     
