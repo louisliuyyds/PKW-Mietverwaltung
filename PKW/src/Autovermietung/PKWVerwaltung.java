@@ -1,10 +1,11 @@
-package Autovermietung;
+package defaults;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
@@ -13,7 +14,8 @@ public class PKWVerwaltung {
 	static HashMap<String, PKW> pkwMap = new HashMap<>();
 	static Scanner scanner = new Scanner(System.in);
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
+		Connector.connect();
 		loadFromFile();
 		while(true) {
 			System.out.println("Gebe einen Befehl ein! Weitere Informationen unter /help.:");
@@ -235,4 +237,3 @@ public class PKWVerwaltung {
 		return number;
 	}
 }
-

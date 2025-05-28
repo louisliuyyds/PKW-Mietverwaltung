@@ -1,4 +1,4 @@
-package Autovermietung;
+package defaults;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -9,29 +9,34 @@ import java.sql.SQLException;
 public class ZugriffUser {
 
     // 1. Datensatz hinzufügen
-	public void addUser(int id, String name, String vorname, String adresse, Date geburtstag, String fuehrerscheininformation, boolean status) {
-	    String sql = "INSERT INTO user (id_user, name, vorname, adresse, geburtstag, fuehrerscheininformation, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public void addUser(int id, String name, String vorname, String adresse, Date geburtstag, String fuehrerscheininformation, boolean status) {
+        String sql = "INSERT INTO users (id_user, name, vorname, adresse, geburtstag, fuehrerscheininformation, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-	    try (Connection conn = Connector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-	        stmt.setInt(1, id);
-	        stmt.setString(2, name);
-	        stmt.setString(3, vorname);
-	        stmt.setString(4, adresse);
-	        stmt.setDate(5, geburtstag); // java.sql.Date erwartet
-	        stmt.setString(6, fuehrerscheininformation);
-	        stmt.setBoolean(7, status);
+        try (Connection conn = Supabaseverbindung.connect(); 
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             
+            stmt.setInt(1, id);
+            stmt.setString(2, name);
+            stmt.setString(3, vorname);
+            stmt.setString(4, adresse);
+            stmt.setDate(5, geburtstag);
+            stmt.setString(6, fuehrerscheininformation);
+            stmt.setBoolean(7, status);
 
-	        stmt.executeUpdate();
-	        System.out.println("Benutzer erfolgreich hinzugefügt.");
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	}
+            stmt.executeUpdate();
+            System.out.println("Benutzer erfolgreich hinzugefügt.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // 2. Datensatz löschen
     public void deleteUser(int id) {
-        String sql = "DELETE FROM user WHERE id_user = ?";
+        String sql = "DELETE FROM users WHERE id_user = ?";
 
-        try (Connection conn = Connector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = Supabaseverbindung.connect(); 
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             
             stmt.setInt(1, id);
             int rows = stmt.executeUpdate();
             if (rows > 0) {
@@ -46,17 +51,19 @@ public class ZugriffUser {
 
     // 3. Datensatz bearbeiten
     public void updateUser(int id, String name, String vorname, String adresse, Date geburtstag, String fuehrerscheininformation, boolean status) {
-        String sql = "UPDATE user SET name = ?, vorname = ?, adresse = ?, geburtstag =?, fuehrerscheininformation=?,status=? WHERE id_user = ?";
+        String sql = "UPDATE users SET name = ?, vorname = ?, adresse = ?, geburtstag = ?, fuehrerscheininformation = ?, status = ? WHERE id_user = ?";
 
-        try (Connection conn = Connector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-        	
-	        stmt.setString(1, name);
-	        stmt.setString(2, vorname);
-	        stmt.setString(3, adresse);
-	        stmt.setDate(4, geburtstag); // java.sql.Date erwartet
-	        stmt.setString(5, fuehrerscheininformation);
-	        stmt.setBoolean(6, status);
-	        stmt.setInt(7, id);
+        try (Connection conn = Supabaseverbindung.connect(); 
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             
+            stmt.setString(1, name);
+            stmt.setString(2, vorname);
+            stmt.setString(3, adresse);
+            stmt.setDate(4, geburtstag);
+            stmt.setString(5, fuehrerscheininformation);
+            stmt.setBoolean(6, status);
+            stmt.setInt(7, id);
+
             int rows = stmt.executeUpdate();
             if (rows > 0) {
                 System.out.println("Benutzer aktualisiert.");
@@ -67,11 +74,12 @@ public class ZugriffUser {
             e.printStackTrace();
         }
     }
+
     // 4. Alle Datensätze ausgeben
     public void getAllUsers() {
-        String sql = "SELECT id_user, name, vorname, adresse, geburtstag, fuehrerscheininformation, status FROM user";
+        String sql = "SELECT id_user, name, vorname, adresse, geburtstag, fuehrerscheininformation, status FROM users";
 
-        try (Connection conn = Connector.connect(); 
+        try (Connection conn = Supabaseverbindung.connect(); 
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
@@ -98,17 +106,18 @@ public class ZugriffUser {
             e.printStackTrace();
         }
     }
+
     // 5. Datensatz anhand des Namens ausgeben
     public void getUsersByName(String vorname, String name) {
-        String sql = "SELECT id_user, name, vorname, adresse, geburtstag, fuehrerscheininformation, status FROM user WHERE name = ? AND vorname=?";
+        String sql = "SELECT id_user, name, vorname, adresse, geburtstag, fuehrerscheininformation, status FROM users WHERE name = ? AND vorname = ?";
 
-        try (Connection conn = Connector.connect();
+        try (Connection conn = Supabaseverbindung.connect(); 
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, name);
             stmt.setString(2, vorname);
-            try (ResultSet rs = stmt.executeQuery()) {
 
+            try (ResultSet rs = stmt.executeQuery()) {
                 boolean found = false;
                 while (rs.next()) {
                     found = true;
@@ -137,6 +146,4 @@ public class ZugriffUser {
             e.printStackTrace();
         }
     }
-
-
 }

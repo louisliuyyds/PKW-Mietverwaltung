@@ -1,4 +1,4 @@
-package Autovermietung;
+package defaults;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +11,7 @@ public class ZugriffExtras {
     public void addExtras(int id_extras, String kategorie, String beschreibung, double preis) {
         String sql = "INSERT INTO extras (id_extras, kategorie, beschreibung, preis) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = Connector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = Supabaseverbindung.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id_extras);
             stmt.setString(2, kategorie);
             stmt.setString(3, beschreibung);
@@ -27,7 +27,7 @@ public class ZugriffExtras {
     public void deleteExtra(int id_extras) {
         String sql = "DELETE FROM extras WHERE id_extras = ?";
 
-        try (Connection conn = Connector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = Supabaseverbindung.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id_extras);
             int rows = stmt.executeUpdate();
             if (rows > 0) {
@@ -44,7 +44,7 @@ public class ZugriffExtras {
     public void updateExtras(int id_extras, String kategorie, String beschreibung, double preis) {
         String sql = "UPDATE extras SET kategorie = ?, beschreibung = ?, preis = ? WHERE id_extras = ?";
 
-        try (Connection conn = Connector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = Supabaseverbindung.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, kategorie);
             stmt.setString(2, beschreibung);
             stmt.setDouble(3, preis);
@@ -59,11 +59,12 @@ public class ZugriffExtras {
             e.printStackTrace();
         }
     }
+
     // 4. Alle Datensätze ausgeben
     public void getAllExtras() {
         String sql = "SELECT id_extras, kategorie, beschreibung, preis FROM extras";
 
-        try (Connection conn = Connector.connect();
+        try (Connection conn = Supabaseverbindung.connect();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
@@ -84,11 +85,12 @@ public class ZugriffExtras {
             e.printStackTrace();
         }
     }
+
     // 5. Datensätze anhand der Kategorie und Beschreibung ausgeben
     public void getExtras(String kategorie, String beschreibung) {
         String sql = "SELECT id_extras, kategorie, beschreibung, preis FROM extras WHERE kategorie = ? AND beschreibung = ?";
 
-        try (Connection conn = Connector.connect();
+        try (Connection conn = Supabaseverbindung.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, kategorie);
@@ -117,7 +119,4 @@ public class ZugriffExtras {
             e.printStackTrace();
         }
     }
-
-    
-    
 }

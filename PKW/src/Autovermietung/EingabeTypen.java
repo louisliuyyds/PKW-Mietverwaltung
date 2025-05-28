@@ -1,4 +1,4 @@
-package Autovermietung;
+package defaults;
 
 public enum EingabeTypen {
 

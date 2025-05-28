@@ -1,4 +1,4 @@
-package Autovermietung;
+package defaults;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,10 +8,10 @@ import java.sql.SQLException;
 public class ZugriffFuhrpark {
 
     // 1. Datensatz hinzufügen
-    public void addFahrzeug(int id_fuhrpark, String kategorie, String fahrzeug, String kennzeichen, String getriebe, int anzahl_sitze,double preis,boolean verfuegbarkeit) {
+    public void addFahrzeug(int id_fuhrpark, String kategorie, String fahrzeug, String kennzeichen, String getriebe, int anzahl_sitze, double preis, boolean verfuegbarkeit) {
         String sql = "INSERT INTO fuhrpark (id_fuhrpark, kategorie, fahrzeug, kennzeichen, getriebe, anzahl_sitze, preis, verfuegbarkeit) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = Connector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = Supabaseverbindung.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id_fuhrpark);
             stmt.setString(2, kategorie);
             stmt.setString(3, fahrzeug);
@@ -31,7 +31,7 @@ public class ZugriffFuhrpark {
     public void deleteFahrzeug(int id_fuhrpark) {
         String sql = "DELETE FROM fuhrpark WHERE id_fuhrpark = ?";
 
-        try (Connection conn = Connector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = Supabaseverbindung.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id_fuhrpark);
             int rows = stmt.executeUpdate();
             if (rows > 0) {
@@ -45,11 +45,10 @@ public class ZugriffFuhrpark {
     }
 
     // 3. Datensatz bearbeiten
-    public void updateFahrzeug(int id_fuhrpark, String kategorie, String fahrzeug, String kennzeichen, String getriebe, int anzahl_sitze,double preis,boolean verfuegbarkeit) {
-        String sql = "UPDATE fuhrpark SET kategorie = ?, fahrzeug = ?, kennzeichen = ?, getriebe=?, anzahl_sitze=?, preis=?,verfuegbarkeit=? WHERE id_fuhrpark = ?";
+    public void updateFahrzeug(int id_fuhrpark, String kategorie, String fahrzeug, String kennzeichen, String getriebe, int anzahl_sitze, double preis, boolean verfuegbarkeit) {
+        String sql = "UPDATE fuhrpark SET kategorie = ?, fahrzeug = ?, kennzeichen = ?, getriebe = ?, anzahl_sitze = ?, preis = ?, verfuegbarkeit = ? WHERE id_fuhrpark = ?";
 
-        try (Connection conn = Connector.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-        	
+        try (Connection conn = Supabaseverbindung.connect(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, kategorie);
             stmt.setString(2, fahrzeug);
             stmt.setString(3, kennzeichen);
@@ -68,11 +67,12 @@ public class ZugriffFuhrpark {
             e.printStackTrace();
         }
     }
+
     // 4. Alle Datensätze ausgeben
     public void getAlleFahrzeuge() {
         String sql = "SELECT id_fuhrpark, kategorie, fahrzeug, kennzeichen, getriebe, anzahl_sitze, preis, verfuegbarkeit FROM fuhrpark";
 
-        try (Connection conn = Connector.connect();
+        try (Connection conn = Supabaseverbindung.connect();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
@@ -101,23 +101,23 @@ public class ZugriffFuhrpark {
             e.printStackTrace();
         }
     }
-    // 5. Datensatz anhand Fahrzeugbezeichnung und Kennzeichen ausgeben
-    public void getFahrzeug(String fahrzeug, String kennzeichen) {
-        String sql = "SELECT id_fuhrpark, kategorie, fahrzeug, kennzeichen, getriebe, anzahl_sitze, preis, verfuegbarkeit " +
-                     "FROM fuhrpark WHERE fahrzeug = ? AND kennzeichen = ?";
 
-        try (Connection conn = Connector.connect();
+    // 5. Datensatz anhand Fahrzeug-ID ausgeben
+    public void getFahrzeug(int id) {
+        String sql = "SELECT * FROM fuhrpark WHERE id_fuhrpark = ?";
+
+        try (Connection conn = Supabaseverbindung.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, fahrzeug);
-            stmt.setString(2, kennzeichen);
+            stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 boolean found = false;
                 while (rs.next()) {
                     found = true;
-                    int id = rs.getInt("id_fuhrpark");
                     String kategorie = rs.getString("kategorie");
+                    String fahrzeug = rs.getString("fahrzeug");
+                    String kennzeichen = rs.getString("kennzeichen");
                     String getriebe = rs.getString("getriebe");
                     int sitze = rs.getInt("anzahl_sitze");
                     double preis = rs.getDouble("preis");
@@ -135,7 +135,7 @@ public class ZugriffFuhrpark {
                 }
 
                 if (!found) {
-                    System.out.println("Kein Fahrzeug mit Typ \"" + fahrzeug + "\" und Kennzeichen \"" + kennzeichen + "\" gefunden.");
+                    System.out.println("Kein Fahrzeug mit der ID \"" + id + "\" gefunden.");
                 }
             }
 
@@ -144,7 +144,28 @@ public class ZugriffFuhrpark {
         }
     }
 
-    
-    
-    
+    public Fahrzeug getFahrzeugObjekt(int id) {
+        String sql = "SELECT * FROM fuhrpark WHERE id_fuhrpark = ?";
+        try (Connection conn = Supabaseverbindung.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Fahrzeug(
+                    rs.getInt("id_fuhrpark"),
+                    rs.getString("kategorie"),
+                    rs.getString("fahrzeug"),
+                    rs.getString("kennzeichen"),
+                    rs.getString("getriebe"),
+                    rs.getInt("anzahl_sitze"),
+                    rs.getDouble("preis"),
+                    rs.getBoolean("verfuegbarkeit")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
