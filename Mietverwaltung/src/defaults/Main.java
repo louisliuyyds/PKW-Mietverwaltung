@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 
 import datenbank.Supabaseverbindung;
-import ui.EingabeFormulare;
 import ui.EingabeTypen;
 import ui.LoginService;
 
