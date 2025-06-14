@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import datenbank.ZugriffExtras;
-import ui.ZugriffInterface;
 
 public class ZugriffExtrasAdapter implements ZugriffInterface {
 

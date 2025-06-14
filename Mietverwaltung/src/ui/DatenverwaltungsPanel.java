@@ -1,6 +1,9 @@
 package ui;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import adapter.ZugriffInterface;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;

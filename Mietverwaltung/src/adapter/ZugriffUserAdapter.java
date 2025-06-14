@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import datenbank.ZugriffUser;
-import ui.ZugriffInterface;
 
 public class ZugriffUserAdapter implements ZugriffInterface {
 

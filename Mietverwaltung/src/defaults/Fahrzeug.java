@@ -29,4 +29,68 @@ public class Fahrzeug {
                ", Kennzeichen: " + kennzeichen + ", Getriebe: " + getriebe +
                ", Sitze: " + anzahlSitze + ", Preis: " + preis + " EUR, Verfügbar: " + (verfuegbar ? "Ja" : "Nein");
     }
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getKategorie() {
+		return kategorie;
+	}
+
+	public void setKategorie(String kategorie) {
+		this.kategorie = kategorie;
+	}
+
+	public String getFahrzeug() {
+		return fahrzeug;
+	}
+
+	public void setFahrzeug(String fahrzeug) {
+		this.fahrzeug = fahrzeug;
+	}
+
+	public String getKennzeichen() {
+		return kennzeichen;
+	}
+
+	public void setKennzeichen(String kennzeichen) {
+		this.kennzeichen = kennzeichen;
+	}
+
+	public String getGetriebe() {
+		return getriebe;
+	}
+
+	public void setGetriebe(String getriebe) {
+		this.getriebe = getriebe;
+	}
+
+	public int getAnzahlSitze() {
+		return anzahlSitze;
+	}
+
+	public void setAnzahlSitze(int anzahlSitze) {
+		this.anzahlSitze = anzahlSitze;
+	}
+
+	public double getPreis() {
+		return preis;
+	}
+
+	public void setPreis(double preis) {
+		this.preis = preis;
+	}
+
+	public boolean isVerfuegbar() {
+		return verfuegbar;
+	}
+
+	public void setVerfuegbar(boolean verfuegbar) {
+		this.verfuegbar = verfuegbar;
+	}
 }

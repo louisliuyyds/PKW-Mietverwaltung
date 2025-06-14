@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import datenbank.ZugriffVertraege;
-import ui.ZugriffInterface;
 
 public class ZugriffVertraegeAdapter implements ZugriffInterface {
 

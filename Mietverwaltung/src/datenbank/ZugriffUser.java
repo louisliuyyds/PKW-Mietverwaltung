@@ -14,20 +14,20 @@ public class ZugriffUser {
 
     // 1. Datensatz hinzufügen
     public void addUser(int id, String name, String vorname, String adresse, Date geburtstag, String fuehrerscheininformation, boolean status, String email, String plainPassword) {
-        String sql = "INSERT INTO users (id_user, name, vorname, adresse, geburtstag, fuehrerscheininformation, status, email, password) VALUES (?, ?, ?, ?, ?, ?, ?,?,?)";
+        String sql = "INSERT INTO users ( name, vorname, adresse, geburtstag, fuehrerscheininformation, status, email, password) VALUES ( ?, ?, ?, ?, ?, ?,?,?)";
         
         try (Connection conn = Supabaseverbindung.connect(); 
              PreparedStatement stmt = conn.prepareStatement(sql)) {
         	String hashed = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
-            stmt.setInt(1, id);
-            stmt.setString(2, name);
-            stmt.setString(3, vorname);
-            stmt.setString(4, adresse);
-            stmt.setDate(5, geburtstag);
-            stmt.setString(6, fuehrerscheininformation);
-            stmt.setBoolean(7, status);
-            stmt.setString(8, email);
-            stmt.setString(9, hashed);
+           
+            stmt.setString(1, name);
+            stmt.setString(2, vorname);
+            stmt.setString(3, adresse);
+            stmt.setDate(4,geburtstag);
+            stmt.setString(5, fuehrerscheininformation);
+            stmt.setBoolean(6, status);
+            stmt.setString(7, email);
+            stmt.setString(8, hashed);
 
             stmt.executeUpdate();
             System.out.println("Benutzer erfolgreich hinzugefügt.");

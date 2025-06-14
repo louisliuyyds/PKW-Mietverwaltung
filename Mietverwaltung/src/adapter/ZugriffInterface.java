@@ -1,4 +1,4 @@
-package ui;
+package adapter;
 import java.util.List;
 import java.util.Map;
 

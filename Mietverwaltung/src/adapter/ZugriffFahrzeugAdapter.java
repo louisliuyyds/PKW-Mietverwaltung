@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import datenbank.ZugriffFuhrpark;
-import ui.ZugriffInterface;
 
 public class ZugriffFahrzeugAdapter implements ZugriffInterface {
 
