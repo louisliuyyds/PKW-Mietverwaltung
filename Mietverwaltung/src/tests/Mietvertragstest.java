@@ -1,6 +1,7 @@
 package tests;
 
 import defaults.Mietvertrag;
+import defaults.User;
 import defaults.Extras;
 import defaults.Fahrzeug;
 import java.time.LocalDate;
@@ -14,7 +15,8 @@ public class Mietvertragstest {
         Fahrzeug fahrzeug = new Fahrzeug(1, "Toyota", "Corolla", null, null, 0, 50.0, true);
         LocalDate startdatum = LocalDate.of(2025, 3, 24);
         LocalDate enddatum = LocalDate.of(2025, 3, 30);
-        Mietvertrag mietvertrag = new Mietvertrag(1, startdatum, enddatum, fahrzeug);
+        User user = new User(1, "Mustermann", "Max", "Musterstraße 1", java.sql.Date.valueOf("1990-01-01"), "Klasse B", true, "max@mustermann.de", "passwort123");
+        Mietvertrag mietvertrag = new Mietvertrag(1, startdatum, enddatum, fahrzeug, user);
 
         // Extras hinzufügen
         Extras extra1 = new Extras(1, "GPS Navigation", 5.99, "Inklusive Kartenmaterial");

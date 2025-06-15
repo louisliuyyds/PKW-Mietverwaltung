@@ -15,14 +15,17 @@ public class Mietvertrag {
     private LocalDate enddatum;
     private Fahrzeug fahrzeug;
     private List<Extras> extrasList = new ArrayList<>();
+    private User user; // Optional: User, der den Vertrag erstellt hat
+    // Konstruktoren, Getter und Setter
     // SQL-Konstanten
 
 
-    public Mietvertrag(int vertragID, LocalDate startdatum, LocalDate enddatum, Fahrzeug fahrzeug) {
+    public Mietvertrag(int vertragID, LocalDate startdatum, LocalDate enddatum, Fahrzeug fahrzeug, User user) {
         this.vertragID = vertragID;
         this.startdatum = startdatum;
         this.enddatum = enddatum;
         this.fahrzeug = fahrzeug;
+        this.user = user;
     }
 
     public int getVertragID() {
@@ -43,6 +46,27 @@ public class Mietvertrag {
     public void setId(int id) {
         this.vertragID = id;
     }
+    public void setStartdatum(LocalDate startdatum) {
+        this.startdatum = startdatum;
+    }
+    public void setEnddatum(LocalDate enddatum) {
+        this.enddatum = enddatum;
+    }
+    public void setFahrzeug(Fahrzeug fahrzeug) {
+        this.fahrzeug = fahrzeug;
+    }
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
+    }
+    public List<Extras> getExtrasList() {
+        return extrasList;
+    }
+    public void setExtrasList(List<Extras> extrasList) {
+        this.extrasList = extrasList;
+    }
 
 	//Gesamtpreisberechnung
 	
@@ -61,6 +85,7 @@ public class Mietvertrag {
                 ", enddatum=" + enddatum +
                 ", fahrzeug=" + fahrzeug +
                 ", extrasList=" + extrasList +
+                ", user=" + user +
                 '}';
     }
     public void addExtra(Extras extra) {
