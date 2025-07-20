@@ -1,7 +1,11 @@
 package defaults;
 
+import java.util.Objects;
+
 public class Extras {
-    private int extrasID;
+    
+
+	private int extrasID;
     private String name;
     private double preis;
     private String beschreibung;
@@ -22,7 +26,26 @@ public class Extras {
                 ", beschreibung='" + beschreibung + '\'' +
                 '}';
     }
+    
+    @Override
+	public int hashCode() {
+		return Objects.hash(beschreibung, extrasID, name, preis);
+	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Extras other = (Extras) obj;
+		return Objects.equals(beschreibung, other.beschreibung) && extrasID == other.extrasID
+				&& Objects.equals(name, other.name)
+				&& Double.doubleToLongBits(preis) == Double.doubleToLongBits(other.preis);
+	}
+    
     // Getter und Setter
     public int getExtrasID() {
         return extrasID;

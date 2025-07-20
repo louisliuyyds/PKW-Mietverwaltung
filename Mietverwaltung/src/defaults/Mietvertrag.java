@@ -2,8 +2,10 @@ package defaults;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import datenbank.Supabaseverbindung;
 import datenbank.ZugriffFuhrpark;
@@ -21,14 +23,77 @@ public class Mietvertrag {
 
 
     public Mietvertrag(int vertragID, LocalDate startdatum, LocalDate enddatum, Fahrzeug fahrzeug, User user) {
-        this.vertragID = vertragID;
+    	validateDatum(startdatum, enddatum);
+        validateMietdauer(startdatum, enddatum);
+        
+        if (hatKundeAktiveBuchung(user.getUserID())) {
+            throw new IllegalStateException("Kunde hat bereits eine aktive Buchung");
+        }
+    	this.vertragID = vertragID;
         this.startdatum = startdatum;
         this.enddatum = enddatum;
         this.fahrzeug = fahrzeug;
         this.user = user;
     }
+    
+ // Geschäftsregel 1: Keine Buchung in der Vergangenheit
+    private void validateDatum(LocalDate start, LocalDate end) {
+        if (start.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Keine Buchungen in der Vergangenheit möglich");
+        }
+        if (end.isBefore(start)) {
+            throw new IllegalArgumentException("Enddatum muss nach Startdatum liegen");
+        }
+    }
+    
+ // Geschäftsregel 2: Maximale Mietdauer 14 Tage
+    private void validateMietdauer(LocalDate start, LocalDate end) {
+        long tage = ChronoUnit.DAYS.between(start, end);
+        if (tage > 14) {
+            throw new IllegalArgumentException("Maximale Mietdauer beträgt 14 Tage");
+        }
+    }
 
-    public int getVertragID() {
+    // Geschäftsregel 3: Nur eine aktive Buchung pro Kunde
+    public static boolean hatKundeAktiveBuchung(int userID) {
+        String sql = "SELECT COUNT(*) AS anzahl FROM mietvertraege " +
+                     "WHERE mietvertraege.id_users = ? AND enddatum >= CURRENT_DATE";
+
+        try (Connection conn = Supabaseverbindung.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt("anzahl") > 0;
+            }
+        } catch (SQLException e) {
+            System.err.println("Fehler bei Kundenbuchungsprüfung: " + e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+	public int hashCode() {
+		return Objects.hash(enddatum, extrasList, fahrzeug, startdatum, user, vertragID);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Mietvertrag other = (Mietvertrag) obj;
+		return Objects.equals(enddatum, other.enddatum) && Objects.equals(extrasList, other.extrasList)
+				&& Objects.equals(fahrzeug, other.fahrzeug) && Objects.equals(startdatum, other.startdatum)
+				&& Objects.equals(user, other.user) && vertragID == other.vertragID;
+	}
+
+	public int getVertragID() {
         return vertragID;
     }
 
@@ -86,6 +151,7 @@ public class Mietvertrag {
                 ", fahrzeug=" + fahrzeug +
                 ", extrasList=" + extrasList +
                 ", user=" + user +
+                ", price=" + gesamtPreis() +
                 '}';
     }
     public void addExtra(Extras extra) {
