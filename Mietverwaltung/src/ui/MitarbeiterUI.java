@@ -29,7 +29,13 @@ public class MitarbeiterUI extends JFrame {
 
     private JPanel createNavigationPanel() {        
         JPanel navPanel = new JPanel();
-        navPanel.setBackground(new Color(37, 37, 37));
+        
+        //Button Colors
+        Color normalColor = new Color(37, 37, 37);
+        Color hoverColor = new Color(44, 44, 44);
+        Color foregroundColor = new Color(204, 204, 204);
+        
+        navPanel.setBackground(normalColor);
         navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
         navPanel.setPreferredSize(new Dimension(150, 0));
         
@@ -47,14 +53,12 @@ public class MitarbeiterUI extends JFrame {
         }
         navPanel.add(Box.createVerticalStrut(20));
         
-        //Buttons
-        Color normalColor = new Color(37, 37, 37);
-        Color hoverColor = new Color(44, 44, 44);
+        
         
         JButton btnStartseite = new JButton("Startseite");
         btnStartseite.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnStartseite.setBackground(new Color(37, 37, 37));
-        btnStartseite.setForeground(new Color(204, 204, 204));
+        btnStartseite.setBackground(normalColor);
+        btnStartseite.setForeground(foregroundColor);
         btnStartseite.setFocusPainted(false);
         btnStartseite.setBorderPainted(false);
         btnStartseite.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
@@ -75,8 +79,8 @@ public class MitarbeiterUI extends JFrame {
 
         JButton btnKunden = new JButton("Kunden");
         btnKunden.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnKunden.setBackground(new Color(37, 37, 37));
-        btnKunden.setForeground(new Color(204, 204, 204));
+        btnKunden.setBackground(normalColor);
+        btnKunden.setForeground(foregroundColor);
         btnKunden.setFocusPainted(false);
         btnKunden.setBorderPainted(false);
         btnKunden.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
@@ -97,8 +101,8 @@ public class MitarbeiterUI extends JFrame {
 
         JButton btnFahrzeuge = new JButton("Fahrzeuge");
         btnFahrzeuge.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnFahrzeuge.setBackground(new Color(37, 37, 37));
-        btnFahrzeuge.setForeground(new Color(204, 204, 204));
+        btnFahrzeuge.setBackground(normalColor);
+        btnFahrzeuge.setForeground(foregroundColor);
         btnFahrzeuge.setFocusPainted(false);
         btnFahrzeuge.setBorderPainted(false);
         btnFahrzeuge.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
@@ -120,8 +124,8 @@ public class MitarbeiterUI extends JFrame {
 
         JButton btnExtras = new JButton("Extras");
         btnExtras.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnExtras.setBackground(new Color(37, 37, 37));
-        btnExtras.setForeground(new Color(204, 204, 204));
+        btnExtras.setBackground(normalColor);
+        btnExtras.setForeground(foregroundColor);
         btnExtras.setFocusPainted(false);
         btnExtras.setBorderPainted(false);
         btnExtras.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
@@ -142,8 +146,8 @@ public class MitarbeiterUI extends JFrame {
 
         JButton btnVertraege = new JButton("Verträge");
         btnVertraege.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnVertraege.setBackground(new Color(37, 37, 37));
-        btnVertraege.setForeground(new Color(204, 204, 204));
+        btnVertraege.setBackground(normalColor);
+        btnVertraege.setForeground(foregroundColor);
         btnVertraege.setFocusPainted(false);
         btnVertraege.setBorderPainted(false);
         btnVertraege.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
