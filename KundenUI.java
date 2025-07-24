@@ -57,67 +57,13 @@ public class KundenUI extends JFrame {
         sidebar.setForeground(foregroundColor);
         
         JButton startBtn   = new JButton("Startseite");
-        startBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        startBtn.setBackground(normalColor);
-        startBtn.setForeground(foregroundColor);
-        startBtn.setFocusPainted(false);
-        startBtn.setBorderPainted(false);
-        startBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        startBtn.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
-        startBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        startBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            	startBtn.setBackground(hoverColor);
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            	startBtn.setBackground(normalColor);
-            }
-        });
+        styleSidebarButton(startBtn, normalColor, hoverColor, foregroundColor);
         
         JButton profilBtn  = new JButton("Profil");
-        profilBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        profilBtn.setBackground(normalColor);
-        profilBtn.setForeground(foregroundColor);
-        profilBtn.setFocusPainted(false);
-        profilBtn.setBorderPainted(false);
-        profilBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        profilBtn.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
-        profilBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        profilBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            	profilBtn.setBackground(hoverColor);
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            	profilBtn.setBackground(normalColor);
-            }
-        });
+        styleSidebarButton(profilBtn, normalColor, hoverColor, foregroundColor);
         
         JButton buchBtn    = new JButton("Meine Buchungen");
-        buchBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        buchBtn.setBackground(normalColor);
-        buchBtn.setForeground(foregroundColor);
-        buchBtn.setFocusPainted(false);
-        buchBtn.setBorderPainted(false);
-        buchBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        buchBtn.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
-        buchBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        buchBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            	buchBtn.setBackground(hoverColor);
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            	buchBtn.setBackground(normalColor);
-            }
-        });
+        styleSidebarButton(buchBtn, normalColor, hoverColor, foregroundColor);
 
         sidebar.add(Box.createVerticalStrut(20));
         sidebar.add(startBtn);
@@ -140,6 +86,29 @@ public class KundenUI extends JFrame {
 
         add(sidebar, BorderLayout.WEST);
         add(cards, BorderLayout.CENTER);
+    }
+    
+    private void styleSidebarButton(JButton button, Color normalColor, Color hoverColor, Color foregroundColor) {
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setBackground(normalColor);
+        button.setForeground(foregroundColor);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(normalColor);
+            }
+        });
     }
     
     //-----------------------[Car Home Panel]--------------------------------------------------------------------------------------------------
