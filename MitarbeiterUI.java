@@ -1,7 +1,10 @@
 package ui;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.net.URL;
 
 import adapter.*;
 import defaults.*;
@@ -22,31 +25,144 @@ public class MitarbeiterUI extends JFrame {
         getContentPane().add(createContentPanel(), BorderLayout.CENTER);
     }
 
-    private JPanel createNavigationPanel() {
+    private JPanel createNavigationPanel() {        
         JPanel navPanel = new JPanel();
+        
+        //Colors
+        Color normalColor = new Color(37, 37, 37);
+        Color hoverColor = new Color(44, 44, 44);
+        Color foregroundColor = new Color(204, 204, 204);
+        
+        navPanel.setBackground(normalColor);
         navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
-        navPanel.setBackground(new Color(230, 230, 230));
         navPanel.setPreferredSize(new Dimension(150, 0));
-
+        
+        // Hinzufügen des Logos
+        navPanel.add(Box.createVerticalStrut(10));
+        try {
+        	URL url = new URL("https://www.borgmann-krefeld.de/fileadmin/allgemein/logos/teaser-logo-rent-a-car-borgmann-krefeld.png");
+            Image image = ImageIO.read(url);
+            Image scaled = image.getScaledInstance(150, 100, Image.SCALE_SMOOTH);
+            JLabel imagelabel = new JLabel(new ImageIcon(scaled));
+            imagelabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            navPanel.add(imagelabel);
+        } catch (IOException e ) {
+        	e.printStackTrace();
+        }
+        navPanel.add(Box.createVerticalStrut(20));
+        
+        
+        
         JButton btnStartseite = new JButton("Startseite");
         btnStartseite.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnStartseite.setBackground(normalColor);
+        btnStartseite.setForeground(foregroundColor);
+        btnStartseite.setFocusPainted(false);
+        btnStartseite.setBorderPainted(false);
+        btnStartseite.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        btnStartseite.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
+        btnStartseite.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnStartseite.addActionListener(e -> showCard("home"));
+        btnStartseite.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            	btnStartseite.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            	btnStartseite.setBackground(normalColor);
+            }
+        });
 
         JButton btnKunden = new JButton("Kunden");
         btnKunden.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnKunden.setBackground(normalColor);
+        btnKunden.setForeground(foregroundColor);
+        btnKunden.setFocusPainted(false);
+        btnKunden.setBorderPainted(false);
+        btnKunden.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        btnKunden.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
+        btnKunden.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnKunden.addActionListener(e -> showCard("kunden"));
+        btnKunden.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            	btnKunden.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            	btnKunden.setBackground(normalColor);
+            }
+        });
 
         JButton btnFahrzeuge = new JButton("Fahrzeuge");
         btnFahrzeuge.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnFahrzeuge.setBackground(normalColor);
+        btnFahrzeuge.setForeground(foregroundColor);
+        btnFahrzeuge.setFocusPainted(false);
+        btnFahrzeuge.setBorderPainted(false);
+        btnFahrzeuge.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        btnFahrzeuge.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
+        btnFahrzeuge.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnFahrzeuge.addActionListener(e -> showCard("fahrzeuge"));
+        btnFahrzeuge.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            	btnFahrzeuge.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            	btnFahrzeuge.setBackground(normalColor);
+            }
+        });
+            
 
         JButton btnExtras = new JButton("Extras");
         btnExtras.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnExtras.setBackground(normalColor);
+        btnExtras.setForeground(foregroundColor);
+        btnExtras.setFocusPainted(false);
+        btnExtras.setBorderPainted(false);
+        btnExtras.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        btnExtras.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
+        btnExtras.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnExtras.addActionListener(e -> showCard("extras"));
+        btnExtras.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            	btnExtras.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            	btnExtras.setBackground(normalColor);
+            }
+        });
 
         JButton btnVertraege = new JButton("Verträge");
         btnVertraege.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnVertraege.setBackground(normalColor);
+        btnVertraege.setForeground(foregroundColor);
+        btnVertraege.setFocusPainted(false);
+        btnVertraege.setBorderPainted(false);
+        btnVertraege.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        btnVertraege.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
+        btnVertraege.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnVertraege.addActionListener(e -> showCard("vertraege"));
+        btnVertraege.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            	btnVertraege.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            	btnVertraege.setBackground(normalColor);
+            }
+        });
 
         navPanel.add(Box.createVerticalStrut(20));
         navPanel.add(btnStartseite);
