@@ -278,17 +278,77 @@ public class KundenUI extends JFrame {
         }
     }
     
+  //-----------------------[Profil Panel]--------------------------------------------------------------------------------------------------
+    Color background = Color.DARK_GRAY;
+    Color panelColor = new Color(44, 44, 44);
+    Color headlineColor = Color.LIGHT_GRAY;
+    Color textColor = new Color(204, 204, 204);
+    
     private JPanel buildProfilPanel(User user) {
-        JPanel p = new JPanel(new GridLayout(0,2,8,4));
-        p.add(new JLabel("Vorname:")); p.add(new JLabel(user.getVorname()));
-        p.add(new JLabel("Nachname:")); p.add(new JLabel(user.getName()));
-        p.add(new JLabel("Adresse:")); p.add(new JLabel(user.getAdresse()));
-        p.add(new JLabel("Geburtstag:")); p.add(new JLabel(user.getGeburtstag().toString()));
-        p.add(new JLabel("Führerschein:")); p.add(new JLabel(user.getFuehrerscheininformation()));
-        p.add(new JLabel("E-Mail:")); p.add(new JLabel(user.getEmail()));
+        
+    	int minWidth = 100;
+    	int maxWidth = 200;
+    	
+    	JPanel p = new JPanel();
+        p.setBackground(background);
+        p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+
+        JPanel roundedPanel = new RoundedPanel(20);
+        
+        roundedPanel.setLayout(new BoxLayout(roundedPanel, BoxLayout.Y_AXIS));
+        roundedPanel.setBackground(panelColor);
+        roundedPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        roundedPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        Font labelFont = new Font("Arial", Font.BOLD, 12);
+        Font valueFont = new Font("Arial", Font.PLAIN, 14);
+
+        roundedPanel.add(createLabeledField("Vorname", user.getVorname(), labelFont, valueFont));
+        roundedPanel.add(Box.createVerticalStrut(10));
+        roundedPanel.add(createLabeledField("Nachname", user.getName(), labelFont, valueFont));
+        roundedPanel.add(Box.createVerticalStrut(10));
+        roundedPanel.add(createLabeledField("Adresse", user.getAdresse(), labelFont, valueFont));
+        roundedPanel.add(Box.createVerticalStrut(10));
+        roundedPanel.add(createLabeledField("Geburtstag", user.getGeburtstag().toString(), labelFont, valueFont));
+        roundedPanel.add(Box.createVerticalStrut(10));
+        roundedPanel.add(createLabeledField("Führerschein", user.getFuehrerscheininformation(), labelFont, valueFont));
+        roundedPanel.add(Box.createVerticalStrut(10));
+        roundedPanel.add(createLabeledField("E-Mail", user.getEmail(), labelFont, valueFont));
+        roundedPanel.add(Box.createVerticalGlue());
+
+        Dimension preferred = roundedPanel.getPreferredSize();
+        int height = preferred.height;
+
+        roundedPanel.setMinimumSize(new Dimension(minWidth, height));
+        roundedPanel.setMaximumSize(new Dimension(maxWidth, height));
+        roundedPanel.setPreferredSize(new Dimension(Math.min(maxWidth, preferred.width), height));
+
+        p.add(Box.createVerticalStrut(20));
+        p.add(roundedPanel);
+
         return p;
     }
 
+    private JPanel createLabeledField(String labelText, String valueText, Font labelFont, Font valueFont) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(panelColor);
+
+        JLabel label = new JLabel(labelText);
+        label.setFont(labelFont);
+        label.setForeground(headlineColor);
+
+        JLabel value = new JLabel(valueText);
+        value.setFont(valueFont);
+        value.setForeground(textColor);
+
+        panel.add(label);
+        panel.add(value);
+
+        return panel;
+    }
+    
+  //-----------------------[Buchungen Panel]--------------------------------------------------------------------------------------------------
     private JPanel buildBuchungenPanel() {
         JPanel p = new JPanel(new BorderLayout());
         p.add(new JLabel("[Buchungs-Übersicht gem. Skizze]", SwingConstants.CENTER), BorderLayout.CENTER);
