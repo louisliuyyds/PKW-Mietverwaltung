@@ -3,6 +3,7 @@ package ui;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 
@@ -54,115 +55,21 @@ public class MitarbeiterUI extends JFrame {
         
         
         JButton btnStartseite = new JButton("Startseite");
-        btnStartseite.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnStartseite.setBackground(normalColor);
-        btnStartseite.setForeground(foregroundColor);
-        btnStartseite.setFocusPainted(false);
-        btnStartseite.setBorderPainted(false);
-        btnStartseite.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        btnStartseite.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
-        btnStartseite.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnStartseite.addActionListener(e -> showCard("home"));
-        btnStartseite.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            	btnStartseite.setBackground(hoverColor);
-            }
+        styleSidebarButton(btnStartseite, normalColor, hoverColor, foregroundColor, e -> showCard("home"));
 
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            	btnStartseite.setBackground(normalColor);
-            }
-        });
 
         JButton btnKunden = new JButton("Kunden");
-        btnKunden.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnKunden.setBackground(normalColor);
-        btnKunden.setForeground(foregroundColor);
-        btnKunden.setFocusPainted(false);
-        btnKunden.setBorderPainted(false);
-        btnKunden.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        btnKunden.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
-        btnKunden.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnKunden.addActionListener(e -> showCard("kunden"));
-        btnKunden.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            	btnKunden.setBackground(hoverColor);
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            	btnKunden.setBackground(normalColor);
-            }
-        });
+        styleSidebarButton(btnKunden, normalColor, hoverColor, foregroundColor, e -> showCard("kunden"));
 
         JButton btnFahrzeuge = new JButton("Fahrzeuge");
-        btnFahrzeuge.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnFahrzeuge.setBackground(normalColor);
-        btnFahrzeuge.setForeground(foregroundColor);
-        btnFahrzeuge.setFocusPainted(false);
-        btnFahrzeuge.setBorderPainted(false);
-        btnFahrzeuge.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        btnFahrzeuge.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
-        btnFahrzeuge.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnFahrzeuge.addActionListener(e -> showCard("fahrzeuge"));
-        btnFahrzeuge.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            	btnFahrzeuge.setBackground(hoverColor);
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            	btnFahrzeuge.setBackground(normalColor);
-            }
-        });
+        styleSidebarButton(btnFahrzeuge, normalColor, hoverColor, foregroundColor, e -> showCard("fahrzeuge"));
             
 
         JButton btnExtras = new JButton("Extras");
-        btnExtras.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnExtras.setBackground(normalColor);
-        btnExtras.setForeground(foregroundColor);
-        btnExtras.setFocusPainted(false);
-        btnExtras.setBorderPainted(false);
-        btnExtras.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        btnExtras.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
-        btnExtras.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnExtras.addActionListener(e -> showCard("extras"));
-        btnExtras.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            	btnExtras.setBackground(hoverColor);
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            	btnExtras.setBackground(normalColor);
-            }
-        });
+        styleSidebarButton(btnExtras, normalColor, hoverColor, foregroundColor, e -> showCard("extras"));
 
         JButton btnVertraege = new JButton("Verträge");
-        btnVertraege.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnVertraege.setBackground(normalColor);
-        btnVertraege.setForeground(foregroundColor);
-        btnVertraege.setFocusPainted(false);
-        btnVertraege.setBorderPainted(false);
-        btnVertraege.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        btnVertraege.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
-        btnVertraege.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnVertraege.addActionListener(e -> showCard("vertraege"));
-        btnVertraege.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            	btnVertraege.setBackground(hoverColor);
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            	btnVertraege.setBackground(normalColor);
-            }
-        });
+        styleSidebarButton(btnVertraege, normalColor, hoverColor, foregroundColor, e -> showCard("vertraege"));
 
         navPanel.add(Box.createVerticalStrut(20));
         navPanel.add(btnStartseite);
@@ -177,6 +84,30 @@ public class MitarbeiterUI extends JFrame {
         navPanel.add(Box.createVerticalGlue());
 
         return navPanel;
+    }
+    
+    private void styleSidebarButton(JButton button, Color normalColor, Color hoverColor, Color foregroundColor, ActionListener action) {
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setBackground(normalColor);
+        button.setForeground(foregroundColor);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.addActionListener(action);
+
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(normalColor);
+            }
+        });
     }
 
     private JPanel createContentPanel() {
