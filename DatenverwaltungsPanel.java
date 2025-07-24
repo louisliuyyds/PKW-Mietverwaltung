@@ -35,10 +35,77 @@ public class DatenverwaltungsPanel<T> extends JPanel {
 
     private JPanel createTopPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-
+        
+        //Colors
+        Color normalColor = new Color(66, 66, 66);
+        Color hoverColor = new Color(44, 44, 44);
+        Color foregroundColor = new Color(204, 204, 204);
+        
+        panel.setBackground(normalColor);
+        panel.setForeground(foregroundColor);
+        
         JButton btnAdd = new JButton("Hinzufügen");
+        btnAdd.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnAdd.setBackground(normalColor);
+        btnAdd.setForeground(foregroundColor);
+        btnAdd.setFocusPainted(false);
+        btnAdd.setBorderPainted(false);
+        btnAdd.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        btnAdd.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
+        btnAdd.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnAdd.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            	btnAdd.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            	btnAdd.setBackground(normalColor);
+            }
+        });
+        
         JButton btnUpdate = new JButton("Bearbeiten");
+        btnUpdate.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnUpdate.setBackground(normalColor);
+        btnUpdate.setForeground(foregroundColor);
+        btnUpdate.setFocusPainted(false);
+        btnUpdate.setBorderPainted(false);
+        btnUpdate.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        btnUpdate.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
+        btnUpdate.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnUpdate.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            	btnUpdate.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            	btnUpdate.setBackground(normalColor);
+            }
+        });
+        
         JButton btnDelete = new JButton("Löschen");
+        btnDelete.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnDelete.setBackground(normalColor);
+        btnDelete.setForeground(foregroundColor);
+        btnDelete.setFocusPainted(false);
+        btnDelete.setBorderPainted(false);
+        btnDelete.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        btnDelete.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 0));
+        btnDelete.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            	btnDelete.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            	btnDelete.setBackground(normalColor);
+            }
+        });
 
         btnAdd.addActionListener(this::onAdd);
         btnUpdate.addActionListener(this::onUpdate);
