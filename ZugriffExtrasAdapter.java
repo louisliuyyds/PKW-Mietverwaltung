@@ -3,7 +3,6 @@ package adapter;
 import datenbank.ZugriffExtras;
 import defaults.Extras;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
