@@ -10,7 +10,7 @@ import defaults.Fahrzeug;
 public class ZugriffFuhrpark {
 
     public void addFahrzeug(Fahrzeug fahrzeug) {
-        String sql = "INSERT INTO fuhrpark (kategorie, marke, modell, kennzeichen, getriebe, anzahl_sitze, treibstoff, preis, verfuegbarkeit) " +
+        String sql = "INSERT INTO fuhrpark (kategorie, marke, modell, kennzeichen, getriebe, anzahl_sitze, treibstoff, preis, verfuegbarkeit, reichweite , url) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = Supabaseverbindung.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -24,6 +24,8 @@ public class ZugriffFuhrpark {
             stmt.setString(7, fahrzeug.getTreibstoff());
             stmt.setDouble(8, fahrzeug.getPreis());
             stmt.setBoolean(9, fahrzeug.isVerfuegbar());
+            stmt.setString(10, fahrzeug.getReichweite());
+            stmt.setString(11, fahrzeug.getUrl());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -43,7 +45,7 @@ public class ZugriffFuhrpark {
     }
 
     public void updateFahrzeug(Fahrzeug fahrzeug) {
-        String sql = "UPDATE fuhrpark SET kategorie = ?, marke = ?, modell = ?, kennzeichen = ?, getriebe = ?, anzahl_sitze = ?, treibstoff = ?, preis = ?, verfuegbarkeit = ? WHERE id_fuhrpark = ?";
+        String sql = "UPDATE fuhrpark SET kategorie = ?, marke = ?, modell = ?, kennzeichen = ?, getriebe = ?, anzahl_sitze = ?, treibstoff = ?, preis = ?, verfuegbarkeit = ?, reichweite = ?, url = ? WHERE id_fuhrpark = ?";
         try (Connection conn = Supabaseverbindung.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -56,7 +58,9 @@ public class ZugriffFuhrpark {
             stmt.setString(7, fahrzeug.getTreibstoff());
             stmt.setDouble(8, fahrzeug.getPreis());
             stmt.setBoolean(9, fahrzeug.isVerfuegbar());
-            stmt.setInt(10, fahrzeug.getId());
+            stmt.setString(10, fahrzeug.getReichweite());
+            stmt.setString(11, fahrzeug.getUrl());
+            stmt.setInt(12, fahrzeug.getId());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -161,7 +165,9 @@ public class ZugriffFuhrpark {
             rs.getInt("anzahl_sitze"),
             rs.getString("treibstoff"),
             rs.getDouble("preis"),
-            rs.getBoolean("verfuegbarkeit")
+            rs.getBoolean("verfuegbarkeit"),
+            rs.getString("reichweite"),
+            rs.getString("url")
         );
     }
 } 
