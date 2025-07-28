@@ -1,89 +1,64 @@
-package service;
+package ui;
 
-import adapter.ZugriffUserAdapter;
-import defaults.User;
-import ui.KundenUI;
-import ui.MitarbeiterUI;
+import datenbank.Supabaseverbindung;
 
-import javax.swing.*;
-import java.awt.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
-public class LoginService extends JFrame {
+import org.mindrot.jbcrypt.BCrypt;
 
-    private final ZugriffUserAdapter zugriff = new ZugriffUserAdapter();
+public class LoginService {
 
-    private JTextField emailField;
-    private JPasswordField passwordField;
+    /**
+     * Versucht einen Benutzer anhand von E-Mail und Passwort einzuloggen.
+     *
+     * @param email die eingegebene E-Mail-Adresse
+     * @param plainPassword das eingegebene Passwort im Klartext
+     * @return true, wenn Login erfolgreich war; false sonst
+     */
+    public boolean login(String email, String plainPassword) {
+        // Admin-Bypass
+        if ("root".equals(email) && "root".equals(plainPassword)) {
+            new MitarbeiterUI().start();
+            return true;
+        }
 
-    public LoginService() {
-        setTitle("Login");
-        setSize(400, 250);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
+        String sql = "SELECT password, id_user FROM users WHERE email = ?";
 
-        add(createLoginPanel(), BorderLayout.CENTER);
-        setVisible(true);
-    }
+        try (Connection conn = Supabaseverbindung.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-    private JPanel createLoginPanel() {
-        JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
 
-        emailField = new JTextField();
-        passwordField = new JPasswordField();
+            if (rs.next()) {
+                String storedHash = rs.getString("password");
+                int id = rs.getInt("id_user");
 
-        JButton loginBtn = new JButton("Login");
-        JButton registerBtn = new JButton("Registrieren");
+                if (BCrypt.checkpw(plainPassword, storedHash)) {
+                    Session.setUserId(id);
+                    System.out.println("Login erfolgreich. Benutzer-ID: " + id);
 
-        loginBtn.addActionListener(e -> handleLogin());
-        registerBtn.addActionListener(e -> openRegisterDialog());
+                       // new KundeUI().start();
+                    
 
-        panel.add(new JLabel("E-Mail:"));
-        panel.add(emailField);
-
-        panel.add(new JLabel("Passwort:"));
-        panel.add(passwordField);
-
-        panel.add(loginBtn);
-        panel.add(registerBtn);
-
-        return panel;
-    }
-
-    private void handleLogin() {
-        String email = emailField.getText().trim();
-        String passwort = new String(passwordField.getPassword());
-
-        if (authenticate(email, passwort)) {
-            User user = Session.getUser();
-
-            // Fenster schließen
-            dispose();
-
-            // Weiterleitung: root -> Mitarbeiter, sonst -> Kunde
-            if ("root".equalsIgnoreCase(user.getEmail())) {
-                SwingUtilities.invokeLater(MitarbeiterUI::start);
-            } else {   
-                SwingUtilities.invokeLater(() -> new KundenUI(user).setVisible(true));
+                    return true;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Falsches Passwort.");
+                    return false;
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Benutzer nicht gefunden.");
+                return false;
             }
 
-        } else {
-            JOptionPane.showMessageDialog(this, "Login fehlgeschlagen!", "Fehler", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Verbindungsfehler zur Datenbank.");
+            return false;
         }
-    }
-
-    private boolean authenticate(String email, String plainPassword) {
-        User user = zugriff.getUserByEmail(email);
-        if (user == null) return false;
-
-        if (!org.mindrot.jbcrypt.BCrypt.checkpw(plainPassword, user.getPassworthash())) return false;
-
-        Session.setUser(user);
-        return true;
-    }
-
-    private void openRegisterDialog() {
-        new RegisterDialog();
     }
 }
