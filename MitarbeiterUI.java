@@ -134,7 +134,7 @@ public class MitarbeiterUI extends JFrame {
         JPanel fahrzeugePanel = new DatenverwaltungsPanel<Fahrzeug>(
             fahrzeugAdapter,
             fahrzeugAdapter::fromMap,
-            f -> new Object[]{ f.getId(), f.getKategorie(), f.getMarke(), f.getModell(), f.getKennzeichen(), f.getGetriebe(), f.getAnzahlSitze(), f.getTreibstoff(), f.getPreis(), f.isVerfuegbar() }
+            f -> new Object[]{ f.getId(), f.getKategorie(), f.getMarke(), f.getModell(), f.getKennzeichen(), f.getGetriebe(), f.getAnzahlSitze(), f.getTreibstoff(), f.getPreis(), f.isVerfuegbar(), f.getReichweite(), f.getUrl() }
         );
 
         JPanel extrasPanel = new DatenverwaltungsPanel<Extras>(
