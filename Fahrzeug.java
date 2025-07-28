@@ -11,9 +11,11 @@ public class Fahrzeug {
     private String treibstoff;
     private double preis;
     private boolean verfuegbar;
+    private String reichweite;
+    private String url;
 
     public Fahrzeug(int id, String kategorie, String marke, String modell, String kennzeichen,
-                    String getriebe, int anzahlSitze, String treibstoff, double preis, boolean verfuegbar) {
+                    String getriebe, int anzahlSitze, String treibstoff, double preis, boolean verfuegbar, String reichweite, String url) {
         this.id = id;
         this.kategorie = kategorie;
         this.marke = marke;
@@ -24,6 +26,8 @@ public class Fahrzeug {
         this.treibstoff = treibstoff;
         this.preis = preis;
         this.verfuegbar = verfuegbar;
+        this.reichweite = reichweite;
+        this.url = url;
     }
 
     public int getId() { return id; }
@@ -55,12 +59,18 @@ public class Fahrzeug {
 
     public boolean isVerfuegbar() { return verfuegbar; }
     public void setVerfuegbar(boolean verfuegbar) { this.verfuegbar = verfuegbar; }
+    
+    public String getReichweite() { return reichweite; }
+    public void setReichweite(String reichweite) { this.reichweite = reichweite; }
+    
+    public String getUrl() { return url; }
+    public void setUrl(String url) { this.url = url; }
 
     @Override
     public String toString() {
         return "ID: " + id + ", Kategorie: " + kategorie + ", Marke: " + marke + ", Modell: " + modell +
                ", Kennzeichen: " + kennzeichen + ", Getriebe: " + getriebe +
-               ", Sitze: " + anzahlSitze + ", Treibstoff: " + treibstoff +
-               ", Preis: " + preis + " EUR, Verfügbar: " + (verfuegbar ? "Ja" : "Nein");
+               ", Sitze: " + anzahlSitze + ", Treibstoff: " + treibstoff  +
+               ", Preis: " + preis + " EUR, Verfügbar: " + (verfuegbar ? "Ja" : "Nein") + ", Reichweite: " + reichweite + ", Url: " + url;
     }
 } 
