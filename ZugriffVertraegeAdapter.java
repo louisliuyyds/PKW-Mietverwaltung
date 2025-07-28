@@ -4,7 +4,6 @@ import datenbank.ZugriffVertraege;
 import datenbank.ZugriffFuhrpark;
 import defaults.Mietvertrag;
 import service.MietvertragService;
-import adapter.ZugriffInterface;
 import defaults.Fahrzeug;
 
 import java.text.SimpleDateFormat;
