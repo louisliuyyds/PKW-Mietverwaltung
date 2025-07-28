@@ -3,7 +3,6 @@ package adapter;
 import datenbank.ZugriffFuhrpark;
 import defaults.Fahrzeug;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ public class ZugriffFahrzeugAdapter implements ZugriffInterface<Fahrzeug> {
     @Override
     public String[] getSpaltennamen() {
         return new String[]{
-            "ID", "Kategorie", "Marke", "Modell", "Kennzeichen", "Getriebe", "Anzahl Sitze", "Treibstoff", "Preis", "Verfügbarkeit"
+            "ID", "Kategorie", "Marke", "Modell", "Kennzeichen", "Getriebe", "Anzahl Sitze", "Treibstoff", "Preis", "Verfügbarkeit", "Reichweite", "Url"
         };
     }
 
@@ -60,8 +59,10 @@ public class ZugriffFahrzeugAdapter implements ZugriffInterface<Fahrzeug> {
             String treibstoff = daten.get("Treibstoff");
             double preis = Double.parseDouble(daten.get("Preis"));
             boolean verfuegbar = daten.get("Verfügbarkeit").equalsIgnoreCase("true") || daten.get("Verfügbarkeit").equalsIgnoreCase("ja");
+            String reichweite = daten.get("Reichweite");
+            String url = daten.get("Url");
 
-            return new Fahrzeug(id, kategorie, marke, modell, kennzeichen, getriebe, sitze, treibstoff, preis, verfuegbar);
+            return new Fahrzeug(id, kategorie, marke, modell, kennzeichen, getriebe, sitze, treibstoff, preis, verfuegbar, reichweite, url);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
