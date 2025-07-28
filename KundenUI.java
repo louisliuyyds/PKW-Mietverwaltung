@@ -29,7 +29,7 @@ public class KundenUI extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-
+        
         // Sidebar
         JPanel sidebar = new JPanel();
         
@@ -255,6 +255,8 @@ public class KundenUI extends JFrame {
     
     private JPanel buildProfilPanel(User user) {
         
+    	
+    	
     	int minWidth = 100;
     	int maxWidth = 200;
     	
@@ -263,6 +265,19 @@ public class KundenUI extends JFrame {
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 
         JPanel roundedPanel = new RoundedPanel(20);
+        
+        try {
+        	URL url = new URL("https://www.windows-faq.de/wp-content/uploads/2022/09/user.png");
+            Image image = ImageIO.read(url);
+            Image scaled = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            JLabel imagelabel = new JLabel(new ImageIcon(scaled));
+            imagelabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            roundedPanel.add(imagelabel);
+        } catch (IOException e ) {
+        	e.printStackTrace();
+        }
+        
+        roundedPanel.add(Box.createVerticalStrut(30));
         
         roundedPanel.setLayout(new BoxLayout(roundedPanel, BoxLayout.Y_AXIS));
         roundedPanel.setBackground(panelColor);
