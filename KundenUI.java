@@ -129,10 +129,10 @@ public class KundenUI extends JFrame {
                 f.getGetriebe(),
                 f.getAnzahlSitze(),
                 f.getTreibstoff(),
-                400, // Beispiel: Reichweite
+                f.getReichweite(),
                 String.format("%.2f €", f.getPreis()),
                 String.format("%.2f €", f.getPreis() * 3),
-                imagePath
+                f.getUrl()
             );
 
             gridPanel.add(card);
@@ -149,7 +149,7 @@ public class KundenUI extends JFrame {
     }
 
     
-    private JPanel createCarCard(String title, String subtitle, String gearType, int seats, String fuel, int reach, String pricePerDay, String totalPrice, String imagePath) {
+    private JPanel createCarCard(String title, String subtitle, String gearType, int seats, String fuel, String reach, String pricePerDay, String totalPrice, String imagePath) {
         int width = 350, height = 400;
         JPanel card = new RoundedPanel(20);
         card.setPreferredSize(new Dimension(width, height));
@@ -174,18 +174,20 @@ public class KundenUI extends JFrame {
         iconsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         iconsPanel.add(new JLabel("👤 " + seats));
         iconsPanel.add(new JLabel("⛽ " + fuel));
-        iconsPanel.add(new JLabel("≈ " + reach + "km"));
+        iconsPanel.add(new JLabel("≈ " + reach));
         iconsPanel.add(new JLabel("⚙️ " + gearType));
         card.add(iconsPanel);
 
         try {
-            ImageIcon carImage = new ImageIcon(imagePath);
-            Image scaledImage = carImage.getImage().getScaledInstance(300, 120, Image.SCALE_SMOOTH);
-            card.add(new JLabel(new ImageIcon(scaledImage)));
+        	URL url = new URL(imagePath);
+            Image image = ImageIO.read(url);
+            Image scaled = image.getScaledInstance(320, 180, Image.SCALE_SMOOTH);
+            JLabel imagelabel = new JLabel(new ImageIcon(scaled));
+            card.add(imagelabel);
         } catch (Exception e) {
             card.add(new JLabel("(Bild nicht gefunden)"));
         }
-
+        
         JLabel priceLabel = new JLabel(pricePerDay + " / Tag");
         priceLabel.setFont(new Font("Arial", Font.BOLD, 16));
         card.add(priceLabel);
