@@ -1,68 +1,63 @@
 package ui;
 
+import adapter.ZugriffFahrzeugAdapter;
+import adapter.ZugriffVertraegeAdapter;
 import defaults.Fahrzeug;
+import defaults.Mietvertrag;
 import defaults.User;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
-import java.util.List;
-import adapter.ZugriffFahrzeugAdapter;
-
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
-/**
- * Einfaches Grundgerüst für das Kunden-Portal.
- * Die konkreten Layout-Elemente solltest du gemäß deiner Skizzen erweitern.
- */
 public class KundenUI extends JFrame {
 
     public static void start(User user) {
-        SwingUtilities.invokeLater(() -> new KundenUI(user).setVisible(true));
+        SwingUtilities.invokeLater(() -> {
+            KundenUI ui = new KundenUI(user);
+            ui.setVisible(true);
+        });
     }
 
     public KundenUI(User user) {
         setTitle("Kundenportal – " + user.getVorname());
-        setSize(1000, 650);
-        setLocationRelativeTo(null);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        
-        // Sidebar
+
         JPanel sidebar = new JPanel();
-        
-        // Hinzufügen des Logos
         sidebar.add(Box.createVerticalStrut(10));
         try {
-        	URL url = new URL("https://www.borgmann-krefeld.de/fileadmin/allgemein/logos/teaser-logo-rent-a-car-borgmann-krefeld.png");
+            URL url = new URL("https://www.borgmann-krefeld.de/fileadmin/allgemein/logos/teaser-logo-rent-a-car-borgmann-krefeld.png");
             Image image = ImageIO.read(url);
             Image scaled = image.getScaledInstance(150, 100, Image.SCALE_SMOOTH);
             JLabel imagelabel = new JLabel(new ImageIcon(scaled));
             imagelabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             sidebar.add(imagelabel);
-        } catch (IOException e ) {
-        	e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        
-        //Colors
+
         Color normalColor = new Color(37, 37, 37);
         Color hoverColor = new Color(44, 44, 44);
         Color foregroundColor = new Color(204, 204, 204);
-        
+
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
         sidebar.setPreferredSize(new Dimension(180, 0));
         sidebar.setBackground(normalColor);
         sidebar.setForeground(foregroundColor);
-        
-        JButton startBtn   = new JButton("Startseite");
+
+        JButton startBtn = new JButton("Startseite");
         styleSidebarButton(startBtn, normalColor, hoverColor, foregroundColor);
-        
-        JButton profilBtn  = new JButton("Profil");
+
+        JButton profilBtn = new JButton("Profil");
         styleSidebarButton(profilBtn, normalColor, hoverColor, foregroundColor);
-        
-        JButton buchBtn    = new JButton("Meine Buchungen");
+
+        JButton buchBtn = new JButton("Meine Buchungen");
         styleSidebarButton(buchBtn, normalColor, hoverColor, foregroundColor);
 
         sidebar.add(Box.createVerticalStrut(20));
@@ -73,11 +68,12 @@ public class KundenUI extends JFrame {
         sidebar.add(buchBtn);
         sidebar.add(Box.createVerticalGlue());
 
-        // Card-Layout
         JPanel cards = new JPanel(new CardLayout());
         cards.add(buildHomePanel(), "home");
         cards.add(buildProfilPanel(user), "profil");
-        cards.add(buildBuchungenPanel(), "buchungen");
+        JPanel buchungenPanel = buildBuchungenPanel(user);
+buchungenPanel.setName("buchungen");
+cards.add(buchungenPanel, "buchungen");
 
         CardLayout cl = (CardLayout) cards.getLayout();
         startBtn.addActionListener(e -> cl.show(cards, "home"));
@@ -87,7 +83,7 @@ public class KundenUI extends JFrame {
         add(sidebar, BorderLayout.WEST);
         add(cards, BorderLayout.CENTER);
     }
-    
+
     private void styleSidebarButton(JButton button, Color normalColor, Color hoverColor, Color foregroundColor) {
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.setBackground(normalColor);
@@ -110,8 +106,7 @@ public class KundenUI extends JFrame {
             }
         });
     }
-    
-    //-----------------------[Car Home Panel]--------------------------------------------------------------------------------------------------
+
     private JPanel buildHomePanel() {
         JPanel gridPanel = new JPanel(new GridLayout(0, 3, 20, 20));
         gridPanel.setBackground(Color.DARK_GRAY);
@@ -129,10 +124,10 @@ public class KundenUI extends JFrame {
                 f.getGetriebe(),
                 f.getAnzahlSitze(),
                 f.getTreibstoff(),
-                f.getReichweite(),
+                400,
                 String.format("%.2f €", f.getPreis()),
                 String.format("%.2f €", f.getPreis() * 3),
-                f.getUrl()
+                imagePath
             );
 
             gridPanel.add(card);
@@ -148,18 +143,124 @@ public class KundenUI extends JFrame {
         return wrapper;
     }
 
-    
-    private JPanel createCarCard(String title, String subtitle, String gearType, int seats, String fuel, String reach, String pricePerDay, String totalPrice, String imagePath) {
+    private JPanel buildBuchungenPanel(User user) {
+    	int user1=user.getId();
+        JPanel listPanel = new JPanel();
+        listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
+        listPanel.setBackground(Color.DARK_GRAY);
+        listPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+
+        ZugriffVertraegeAdapter adapter = new ZugriffVertraegeAdapter();
+        List<Mietvertrag> vertraege = adapter.getVertraegeByUser(user1);
+
+        for (Mietvertrag v : vertraege) {
+            JPanel itemPanel = new JPanel(new BorderLayout());
+            itemPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            itemPanel.setBackground(new Color(44, 44, 44));
+
+            JLabel label = new JLabel(String.format("Fahrzeug: %s %s | Start: %s | Ende: %s",
+                    v.getFahrzeug().getMarke(),
+                    v.getFahrzeug().getModell(),
+                    v.getStartdatum().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                    v.getEnddatum().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
+            label.setForeground(new Color(204, 204, 204));
+
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            buttonPanel.setBackground(new Color(44, 44, 44));
+
+            JButton detailsBtn = new JButton("Details anzeigen");
+            JButton stornierenBtn = new JButton("Stornieren");
+
+            // Einheitliches Button-Styling
+            Font btnFont = new Font("Arial", Font.PLAIN, 12);
+            Color btnBg = new Color(60, 63, 65);
+            Color btnFg = new Color(220, 220, 220);
+
+            for (JButton btn : new JButton[]{detailsBtn, stornierenBtn}) {
+                btn.setBackground(btnBg);
+                btn.setForeground(btnFg);
+                btn.setFocusPainted(false);
+                btn.setFont(btnFont);
+            }
+
+            detailsBtn.addActionListener(e -> JOptionPane.showMessageDialog(this, v.toString(), "Details", JOptionPane.INFORMATION_MESSAGE));
+
+            
+stornierenBtn.addActionListener(e -> {
+    int bestaetigung = JOptionPane.showConfirmDialog(
+        this,
+        "Möchten Sie diese Buchung wirklich stornieren?",
+        "Buchung stornieren",
+        JOptionPane.OK_CANCEL_OPTION,
+        JOptionPane.WARNING_MESSAGE
+    );
+
+    if (bestaetigung == JOptionPane.OK_OPTION) {
+        ZugriffVertraegeAdapter adapters = new ZugriffVertraegeAdapter();
+        adapters.delete(v.getId());
+
+        JOptionPane.showMessageDialog(
+            this,
+            "Buchung wurde erfolgreich storniert.",
+            "Erfolg",
+            JOptionPane.INFORMATION_MESSAGE
+        );
+
+        // Buchungspanel aktualisieren
+        Container content = this.getContentPane();
+        for (Component comp : content.getComponents()) {
+            if (comp instanceof JPanel && ((JPanel) comp).getLayout() instanceof CardLayout) {
+                JPanel cards = (JPanel) comp;
+
+                // Alte "buchungen"-Komponente entfernen
+                for (Component c : cards.getComponents()) {
+                    if ("buchungen".equals(c.getName())) {
+                        cards.remove(c);
+                        break;
+                    }
+                }
+
+                JPanel newBuchungen = buildBuchungenPanel(user);
+                newBuchungen.setName("buchungen");
+                cards.add(newBuchungen, "buchungen");
+
+                ((CardLayout) cards.getLayout()).show(cards, "buchungen");
+                break;
+            }
+        }
+    }
+});
+
+
+            buttonPanel.add(detailsBtn);
+            buttonPanel.add(stornierenBtn);
+
+            itemPanel.add(label, BorderLayout.CENTER);
+            itemPanel.add(buttonPanel, BorderLayout.EAST);
+
+            listPanel.add(itemPanel);
+            listPanel.add(Box.createVerticalStrut(10));
+        }
+
+        JScrollPane scrollPane = new JScrollPane(listPanel);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setBackground(Color.DARK_GRAY);
+        wrapper.add(scrollPane, BorderLayout.CENTER);
+
+        return wrapper;
+    }
+
+    private JPanel createCarCard(String title, String subtitle, String gearType, int seats, String fuel, int reach, String pricePerDay, String totalPrice, String imagePath) {
         int width = 350, height = 400;
         JPanel card = new RoundedPanel(20);
         card.setPreferredSize(new Dimension(width, height));
-        card.setMaximumSize(new Dimension(width, height));
-        card.setMinimumSize(new Dimension(width, height));
         card.setBackground(Color.WHITE);
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Labels
         JLabel titleLabel = new JLabel(title);
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
@@ -174,28 +275,25 @@ public class KundenUI extends JFrame {
         iconsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         iconsPanel.add(new JLabel("👤 " + seats));
         iconsPanel.add(new JLabel("⛽ " + fuel));
-        iconsPanel.add(new JLabel("≈ " + reach));
+        iconsPanel.add(new JLabel("≈ " + reach + "km"));
         iconsPanel.add(new JLabel("⚙️ " + gearType));
         card.add(iconsPanel);
 
         try {
-        	URL url = new URL(imagePath);
-            Image image = ImageIO.read(url);
-            Image scaled = image.getScaledInstance(320, 180, Image.SCALE_SMOOTH);
-            JLabel imagelabel = new JLabel(new ImageIcon(scaled));
-            card.add(imagelabel);
+            ImageIcon carImage = new ImageIcon(imagePath);
+            Image scaledImage = carImage.getImage().getScaledInstance(300, 120, Image.SCALE_SMOOTH);
+            card.add(new JLabel(new ImageIcon(scaledImage)));
         } catch (Exception e) {
             card.add(new JLabel("(Bild nicht gefunden)"));
         }
-        
+
         JLabel priceLabel = new JLabel(pricePerDay + " / Tag");
         priceLabel.setFont(new Font("Arial", Font.BOLD, 16));
         card.add(priceLabel);
 
         JLabel totalLabel = new JLabel(totalPrice + " Gesamtpreis");
         card.add(totalLabel);
-        
-        //Colors
+
         Color defaultColor = Color.WHITE;
         Color hoverBorder = new Color(100, 150, 255);
         Color clickColor = new Color(230, 230, 230);
@@ -209,7 +307,7 @@ public class KundenUI extends JFrame {
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-            	card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                 card.setCursor(Cursor.getDefaultCursor());
             }
 
@@ -248,39 +346,34 @@ public class KundenUI extends JFrame {
             super.paintComponent(g);
         }
     }
-    
-  //-----------------------[Profil Panel]--------------------------------------------------------------------------------------------------
+
     Color background = Color.DARK_GRAY;
     Color panelColor = new Color(44, 44, 44);
     Color headlineColor = Color.LIGHT_GRAY;
     Color textColor = new Color(204, 204, 204);
-    
+
     private JPanel buildProfilPanel(User user) {
-        
-    	
-    	
-    	int minWidth = 100;
-    	int maxWidth = 200;
-    	
-    	JPanel p = new JPanel();
+        int minWidth = 100;
+        int maxWidth = 200;
+
+        JPanel p = new JPanel();
         p.setBackground(background);
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 
         JPanel roundedPanel = new RoundedPanel(20);
-        
+
         try {
-        	URL url = new URL("https://www.windows-faq.de/wp-content/uploads/2022/09/user.png");
+            URL url = new URL("https://www.windows-faq.de/wp-content/uploads/2022/09/user.png");
             Image image = ImageIO.read(url);
             Image scaled = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
             JLabel imagelabel = new JLabel(new ImageIcon(scaled));
             imagelabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             roundedPanel.add(imagelabel);
-        } catch (IOException e ) {
-        	e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        
+
         roundedPanel.add(Box.createVerticalStrut(30));
-        
         roundedPanel.setLayout(new BoxLayout(roundedPanel, BoxLayout.Y_AXIS));
         roundedPanel.setBackground(panelColor);
         roundedPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -295,7 +388,7 @@ public class KundenUI extends JFrame {
         roundedPanel.add(Box.createVerticalStrut(10));
         roundedPanel.add(createLabeledField("Adresse", user.getAdresse(), labelFont, valueFont));
         roundedPanel.add(Box.createVerticalStrut(10));
-        roundedPanel.add(createLabeledField("Geburtstag", user.getGeburtstag().toString(), labelFont, valueFont));
+        roundedPanel.add(createLabeledField("Geburtstag", user.getGeburtstag().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")), labelFont, valueFont));
         roundedPanel.add(Box.createVerticalStrut(10));
         roundedPanel.add(createLabeledField("Führerschein", user.getFuehrerscheininformation(), labelFont, valueFont));
         roundedPanel.add(Box.createVerticalStrut(10));
@@ -332,12 +425,5 @@ public class KundenUI extends JFrame {
         panel.add(value);
 
         return panel;
-    }
-    
-  //-----------------------[Buchungen Panel]--------------------------------------------------------------------------------------------------
-    private JPanel buildBuchungenPanel() {
-        JPanel p = new JPanel(new BorderLayout());
-        p.add(new JLabel("[Buchungs-Übersicht gem. Skizze]", SwingConstants.CENTER), BorderLayout.CENTER);
-        return p;
     }
 }

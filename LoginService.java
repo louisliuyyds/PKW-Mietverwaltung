@@ -1,64 +1,34 @@
-package ui;
+package service;
 
-import datenbank.Supabaseverbindung;
+import adapter.ZugriffUserAdapter;
+import defaults.User;
+import ui.KundenUI;
+import ui.MitarbeiterUI;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import javax.swing.JOptionPane;
-
-import org.mindrot.jbcrypt.BCrypt;
+import javax.swing.*;
 
 public class LoginService {
 
-    /**
-     * Versucht einen Benutzer anhand von E-Mail und Passwort einzuloggen.
-     *
-     * @param email die eingegebene E-Mail-Adresse
-     * @param plainPassword das eingegebene Passwort im Klartext
-     * @return true, wenn Login erfolgreich war; false sonst
-     */
-    public boolean login(String email, String plainPassword) {
-        // Admin-Bypass
-        if ("root".equals(email) && "root".equals(plainPassword)) {
-            new MitarbeiterUI().start();
-            return true;
-        }
+    private final ZugriffUserAdapter zugriff = new ZugriffUserAdapter();
 
-        String sql = "SELECT password, id_user FROM users WHERE email = ?";
+    public boolean authenticate(String email, String plainPassword) {
+        User user = zugriff.getUserByEmail(email);
+        if (user == null) return false;
 
-        try (Connection conn = Supabaseverbindung.connect();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        if (!org.mindrot.jbcrypt.BCrypt.checkpw(plainPassword, user.getPassworthash())) return false;
 
-            stmt.setString(1, email);
-            ResultSet rs = stmt.executeQuery();
+        Session.setUser(user);
+        return true;
+    }
 
-            if (rs.next()) {
-                String storedHash = rs.getString("password");
-                int id = rs.getInt("id_user");
+    public void proceedAfterLogin(JFrame frame, String email) {
+        User user = Session.getUser();
+        frame.dispose();
 
-                if (BCrypt.checkpw(plainPassword, storedHash)) {
-                    Session.setUserId(id);
-                    System.out.println("Login erfolgreich. Benutzer-ID: " + id);
-
-                       // new KundeUI().start();
-                    
-
-                    return true;
-                } else {
-                    JOptionPane.showMessageDialog(null, "Falsches Passwort.");
-                    return false;
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Benutzer nicht gefunden.");
-                return false;
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Verbindungsfehler zur Datenbank.");
-            return false;
+        if ("root".equalsIgnoreCase(email)) {
+            SwingUtilities.invokeLater(MitarbeiterUI::start);
+        } else {
+            SwingUtilities.invokeLater(() -> new KundenUI(user).setVisible(true));
         }
     }
 }

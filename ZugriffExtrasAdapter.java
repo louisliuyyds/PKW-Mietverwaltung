@@ -52,9 +52,10 @@ public class ZugriffExtrasAdapter implements ZugriffInterface<Extras> {
     public Extras fromMap(Map<String, String> daten) {
         try {
             int id = daten.containsKey("ID") ? Integer.parseInt(daten.get("ID")) : 0;
+            String kategorie = daten.get("Kategorie");
             String bezeichnung = daten.get("Beschreibung");
             double preis = Double.parseDouble(daten.get("Preis"));
-            return new Extras(id, bezeichnung, preis);
+            return new Extras(id,kategorie, bezeichnung, preis);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

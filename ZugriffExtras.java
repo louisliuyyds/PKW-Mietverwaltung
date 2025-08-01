@@ -9,14 +9,14 @@ import defaults.Extras;
 public class ZugriffExtras {
 
     public void addExtras(Extras extras) {
-        String sql = "INSERT INTO extras (id_extras, kategorie, beschreibung, preis) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO extras (kategorie, beschreibung, preis) VALUES ( ?, ?, ?)";
         try (Connection conn = Supabaseverbindung.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, extras.getId());
-            stmt.setString(2, extras.getBezeichnung());
-            stmt.setString(3, extras.getBezeichnung()); // ggf. trennen in bezeichnung + beschreibung
-            stmt.setDouble(4, extras.getPreis());
+            
+            stmt.setString(1, extras.getKategorie());
+            stmt.setString(2, extras.getBezeichnung()); // ggf. trennen in bezeichnung + beschreibung
+            stmt.setDouble(3, extras.getPreis());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -41,7 +41,7 @@ public class ZugriffExtras {
         try (Connection conn = Supabaseverbindung.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, extras.getBezeichnung());
+            stmt.setString(1, extras.getKategorie());
             stmt.setString(2, extras.getBezeichnung());
             stmt.setDouble(3, extras.getPreis());
             stmt.setInt(4, extras.getId());
@@ -91,6 +91,7 @@ public class ZugriffExtras {
     private Extras mapResultSetToExtras(ResultSet rs) throws SQLException {
         return new Extras(
             rs.getInt("id_extras"),
+            rs.getString("kategorie"),
             rs.getString("beschreibung"),
             rs.getDouble("preis")
         );
