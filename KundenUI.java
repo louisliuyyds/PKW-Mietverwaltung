@@ -2,17 +2,23 @@ package ui;
 
 import adapter.ZugriffFahrzeugAdapter;
 import adapter.ZugriffVertraegeAdapter;
+import datenbank.ZugriffFuhrpark;
+import datenbank.ZugriffVertraege;
 import defaults.Fahrzeug;
 import defaults.Mietvertrag;
 import defaults.User;
+import service.MietvertragService;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 
 public class KundenUI extends JFrame {
 
@@ -72,8 +78,8 @@ public class KundenUI extends JFrame {
         cards.add(buildHomePanel(), "home");
         cards.add(buildProfilPanel(user), "profil");
         JPanel buchungenPanel = buildBuchungenPanel(user);
-buchungenPanel.setName("buchungen");
-cards.add(buchungenPanel, "buchungen");
+        buchungenPanel.setName("buchungen");
+        cards.add(buchungenPanel, "buchungen");
 
         CardLayout cl = (CardLayout) cards.getLayout();
         startBtn.addActionListener(e -> cl.show(cards, "home"));
@@ -127,7 +133,7 @@ cards.add(buchungenPanel, "buchungen");
                 400,
                 String.format("%.2f €", f.getPreis()),
                 String.format("%.2f €", f.getPreis() * 3),
-                imagePath
+                f.getUrl()
             );
 
             gridPanel.add(card);
@@ -144,102 +150,118 @@ cards.add(buchungenPanel, "buchungen");
     }
 
     private JPanel buildBuchungenPanel(User user) {
-    	int user1=user.getId();
+        int userId = user.getId();
         JPanel listPanel = new JPanel();
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
         listPanel.setBackground(Color.DARK_GRAY);
         listPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
+        // Überschrift
+        JLabel headline = new JLabel("Meine Buchungen");
+        headline.setFont(new Font("Arial", Font.BOLD, 18));
+        headline.setForeground(Color.LIGHT_GRAY);
+        headline.setAlignmentX(Component.LEFT_ALIGNMENT);
+        listPanel.add(headline);
+        listPanel.add(Box.createVerticalStrut(20));
+
         ZugriffVertraegeAdapter adapter = new ZugriffVertraegeAdapter();
-        List<Mietvertrag> vertraege = adapter.getVertraegeByUser(user1);
+        List<Mietvertrag> vertraege = adapter.getVertraegeByUser(userId);
 
-        for (Mietvertrag v : vertraege) {
-            JPanel itemPanel = new JPanel(new BorderLayout());
-            itemPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-            itemPanel.setBackground(new Color(44, 44, 44));
+        if (vertraege.isEmpty()) {
+            JLabel noBookings = new JLabel("Keine Buchungen gefunden.");
+            noBookings.setForeground(Color.GRAY);
+            noBookings.setFont(new Font("Arial", Font.ITALIC, 14));
+            noBookings.setAlignmentX(Component.LEFT_ALIGNMENT);
+            listPanel.add(noBookings);
+        } else {
+            for (Mietvertrag v : vertraege) {
+                JPanel itemPanel = new JPanel(new BorderLayout());
+                itemPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                itemPanel.setBackground(new Color(44, 44, 44));
 
-            JLabel label = new JLabel(String.format("Fahrzeug: %s %s | Start: %s | Ende: %s",
+                String labelText = String.format(
+                    "<html><b>%s %s</b><br/>Zeitraum: %s – %s<br/>Preis: %.2f €</html>",
                     v.getFahrzeug().getMarke(),
                     v.getFahrzeug().getModell(),
                     v.getStartdatum().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-                    v.getEnddatum().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
-            label.setForeground(new Color(204, 204, 204));
+                    v.getEnddatum().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                    v.getGesamtpreis()
+                );
 
-            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-            buttonPanel.setBackground(new Color(44, 44, 44));
+                JLabel label = new JLabel(labelText);
+                label.setForeground(new Color(204, 204, 204));
 
-            JButton detailsBtn = new JButton("Details anzeigen");
-            JButton stornierenBtn = new JButton("Stornieren");
+                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                buttonPanel.setBackground(new Color(44, 44, 44));
 
-            // Einheitliches Button-Styling
-            Font btnFont = new Font("Arial", Font.PLAIN, 12);
-            Color btnBg = new Color(60, 63, 65);
-            Color btnFg = new Color(220, 220, 220);
+                JButton detailsBtn = new JButton("Details anzeigen");
+                JButton stornierenBtn = new JButton("Stornieren");
 
-            for (JButton btn : new JButton[]{detailsBtn, stornierenBtn}) {
-                btn.setBackground(btnBg);
-                btn.setForeground(btnFg);
-                btn.setFocusPainted(false);
-                btn.setFont(btnFont);
-            }
+                // Einheitliches Button-Styling
+                Font btnFont = new Font("Arial", Font.PLAIN, 12);
+                Color btnBg = new Color(60, 63, 65);
+                Color btnFg = new Color(220, 220, 220);
 
-            detailsBtn.addActionListener(e -> JOptionPane.showMessageDialog(this, v.toString(), "Details", JOptionPane.INFORMATION_MESSAGE));
-
-            
-stornierenBtn.addActionListener(e -> {
-    int bestaetigung = JOptionPane.showConfirmDialog(
-        this,
-        "Möchten Sie diese Buchung wirklich stornieren?",
-        "Buchung stornieren",
-        JOptionPane.OK_CANCEL_OPTION,
-        JOptionPane.WARNING_MESSAGE
-    );
-
-    if (bestaetigung == JOptionPane.OK_OPTION) {
-        ZugriffVertraegeAdapter adapters = new ZugriffVertraegeAdapter();
-        adapters.delete(v.getId());
-
-        JOptionPane.showMessageDialog(
-            this,
-            "Buchung wurde erfolgreich storniert.",
-            "Erfolg",
-            JOptionPane.INFORMATION_MESSAGE
-        );
-
-        // Buchungspanel aktualisieren
-        Container content = this.getContentPane();
-        for (Component comp : content.getComponents()) {
-            if (comp instanceof JPanel && ((JPanel) comp).getLayout() instanceof CardLayout) {
-                JPanel cards = (JPanel) comp;
-
-                // Alte "buchungen"-Komponente entfernen
-                for (Component c : cards.getComponents()) {
-                    if ("buchungen".equals(c.getName())) {
-                        cards.remove(c);
-                        break;
-                    }
+                for (JButton btn : new JButton[]{detailsBtn, stornierenBtn}) {
+                    btn.setBackground(btnBg);
+                    btn.setForeground(btnFg);
+                    btn.setFocusPainted(false);
+                    btn.setFont(btnFont);
                 }
 
-                JPanel newBuchungen = buildBuchungenPanel(user);
-                newBuchungen.setName("buchungen");
-                cards.add(newBuchungen, "buchungen");
+                detailsBtn.addActionListener(e -> JOptionPane.showMessageDialog(this, v.toString(), "Details", JOptionPane.INFORMATION_MESSAGE));
 
-                ((CardLayout) cards.getLayout()).show(cards, "buchungen");
-                break;
+                stornierenBtn.addActionListener(e -> {
+                    int bestaetigung = JOptionPane.showConfirmDialog(
+                        this,
+                        "Möchten Sie diese Buchung wirklich stornieren?",
+                        "Buchung stornieren",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                    );
+
+                    if (bestaetigung == JOptionPane.OK_OPTION) {
+                        adapter.delete(v.getId());
+                        JOptionPane.showMessageDialog(
+                            this,
+                            "Buchung wurde erfolgreich storniert.",
+                            "Erfolg",
+                            JOptionPane.INFORMATION_MESSAGE
+                        );
+
+                        // Panel neu laden
+                        Container content = this.getContentPane();
+                        for (Component comp : content.getComponents()) {
+                            if (comp instanceof JPanel && ((JPanel) comp).getLayout() instanceof CardLayout) {
+                                JPanel cards = (JPanel) comp;
+
+                                // Alte "buchungen"-Komponente entfernen
+                                for (Component c : cards.getComponents()) {
+                                    if ("buchungen".equals(c.getName())) {
+                                        cards.remove(c);
+                                        break;
+                                    }
+                                }
+
+                                JPanel newBuchungen = buildBuchungenPanel(user);
+                                newBuchungen.setName("buchungen");
+                                cards.add(newBuchungen, "buchungen");
+                                ((CardLayout) cards.getLayout()).show(cards, "buchungen");
+                                break;
+                            }
+                        }
+                    }
+                });
+
+                buttonPanel.add(detailsBtn);
+                buttonPanel.add(stornierenBtn);
+
+                itemPanel.add(label, BorderLayout.CENTER);
+                itemPanel.add(buttonPanel, BorderLayout.EAST);
+
+                listPanel.add(itemPanel);
+                listPanel.add(Box.createVerticalStrut(10));
             }
-        }
-    }
-});
-
-
-            buttonPanel.add(detailsBtn);
-            buttonPanel.add(stornierenBtn);
-
-            itemPanel.add(label, BorderLayout.CENTER);
-            itemPanel.add(buttonPanel, BorderLayout.EAST);
-
-            listPanel.add(itemPanel);
-            listPanel.add(Box.createVerticalStrut(10));
         }
 
         JScrollPane scrollPane = new JScrollPane(listPanel);
@@ -249,9 +271,9 @@ stornierenBtn.addActionListener(e -> {
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.setBackground(Color.DARK_GRAY);
         wrapper.add(scrollPane, BorderLayout.CENTER);
-
         return wrapper;
     }
+
 
     private JPanel createCarCard(String title, String subtitle, String gearType, int seats, String fuel, int reach, String pricePerDay, String totalPrice, String imagePath) {
         int width = 350, height = 400;
@@ -280,9 +302,11 @@ stornierenBtn.addActionListener(e -> {
         card.add(iconsPanel);
 
         try {
-            ImageIcon carImage = new ImageIcon(imagePath);
-            Image scaledImage = carImage.getImage().getScaledInstance(300, 120, Image.SCALE_SMOOTH);
-            card.add(new JLabel(new ImageIcon(scaledImage)));
+            URL url = new URL(imagePath);
+            Image image = ImageIO.read(url);
+            Image scaled = image.getScaledInstance(368, 207, Image.SCALE_SMOOTH);
+            JLabel imagelabel = new JLabel(new ImageIcon(scaled));
+            card.add(imagelabel);
         } catch (Exception e) {
             card.add(new JLabel("(Bild nicht gefunden)"));
         }
@@ -321,8 +345,8 @@ stornierenBtn.addActionListener(e -> {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 card.setBackground(defaultColor);
                 iconsPanel.setBackground(defaultColor);
-                JOptionPane.showMessageDialog(card, "Du hast " + title + " gewählt!");
             }
+
         });
 
         return card;
